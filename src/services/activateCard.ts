@@ -1,6 +1,9 @@
 import * as cardRepository from "../repositories/cardRepository";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";
+
+import validateCard from "./validateCard";
+
 import Cryptr from "cryptr";
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET || "secret");
 
@@ -27,12 +30,6 @@ export default async function activateCard(
 
 async function getCardById(id: number): Promise<any> {
   return await cardRepository.findById(id);
-}
-
-function validateCard(card: any): any {
-  if (!card) throw { code: "Not Found", message: "Card not found" };
-  if (!card.isBlocked)
-    throw { code: "Bad Request", message: "Card is already active" };
 }
 
 function validateExpirationDate(expirationDate: string) {
