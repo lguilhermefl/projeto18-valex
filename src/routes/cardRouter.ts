@@ -1,16 +1,22 @@
 import { Router } from "express";
-import { createCardController } from "../controllers/cardController";
+import * as cardController from "../controllers/cardController";
 import validateBodySchema from "../middlewares/bodySchemaValidationMiddleware";
 import validateApiKeySchema from "../middlewares/apiKeyValidationMiddleware";
 import { cardTypeSchema } from "../schemas/createCardSchema";
+import { activateCardSchema } from "../schemas/activateCardSchema";
 
 const cardRouter = Router();
 
 cardRouter.post(
-  "/card/create",
+  "/card",
   validateApiKeySchema,
   validateBodySchema(cardTypeSchema),
-  createCardController
+  cardController.createCardController
+);
+cardRouter.put(
+  "/card",
+  validateBodySchema(activateCardSchema),
+  cardController.activateCardController
 );
 
 export default cardRouter;

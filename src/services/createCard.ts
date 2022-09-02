@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import Cryptr from "cryptr";
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET || "secret");
 
-export async function createCard(
+export default async function createCard(
   apiKey: string,
   employeeId: number,
   type: cardRepository.TransactionTypes
