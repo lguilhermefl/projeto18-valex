@@ -15,9 +15,9 @@ export default async function activateCard(
   validateExpirationDate(card.expirationDate);
   validateSecurityCode(securityCode, card.securityCode);
 
-  const passwordHash = encryptPassword(password);
+  const passwordHash: string = encryptPassword(password);
 
-  const cardData = {
+  const cardData: { isBlocked: boolean; password: string } = {
     isBlocked: false,
     password: passwordHash,
   };
@@ -25,37 +25,34 @@ export default async function activateCard(
   await cardRepository.update(id, cardData);
 }
 
-async function getCardById(id: number) {
+async function getCardById(id: number): Promise<any> {
   return await cardRepository.findById(id);
 }
 
-function validateCard(card: any) {
+function validateCard(card: any): any {
   if (!card) throw { code: "Not Found", message: "Card not found" };
   if (!card.isBlocked)
     throw { code: "Bad Request", message: "Card is already active" };
 }
 
 function validateExpirationDate(expirationDate: string) {
-  const today = getTodaysDateInFinancialFormat();
-  const arrayToday = splitDateValues(today);
-  const arrayExpirationDate = splitDateValues(expirationDate);
+  const today: string = getTodaysDateInFinancialFormat();
+  const arrayToday: string[] = splitFinancialDateValues(today);
+  const arrayExpirationDate: string[] =
+    splitFinancialDateValues(expirationDate);
 
-  const todayObject = {
-    month: arrayToday[0],
-    year: arrayToday[1],
-  };
-  const expirationDateObject = {
-    month: arrayExpirationDate[0],
-    year: arrayExpirationDate[1],
-  };
+  const todaysMonth: string = arrayToday[0];
+  const todaysYear: string = arrayToday[1];
+  const expirationDateMonth: string = arrayExpirationDate[0];
+  const expirationDateYear: string = arrayExpirationDate[1];
 
-  const monthDifference = differenceTwoDigitsDateString(
-    todayObject.month,
-    expirationDateObject.month
+  const monthDifference: number = differenceTwoDigitsDateString(
+    todaysMonth,
+    expirationDateMonth
   );
-  const yearDifference = differenceTwoDigitsDateString(
-    todayObject.year,
-    expirationDateObject.year
+  const yearDifference: number = differenceTwoDigitsDateString(
+    todaysYear,
+    expirationDateYear
   );
 
   if (monthDifference < 0 && yearDifference <= 0) {
@@ -65,26 +62,32 @@ function validateExpirationDate(expirationDate: string) {
   }
 }
 
-function getTodaysDateInFinancialFormat() {
+function getTodaysDateInFinancialFormat(): string {
   return dayjs(Date.now()).format("MM/YY");
 }
 
-function splitDateValues(date: string) {
+function splitFinancialDateValues(date: string): string[] {
   return date.split("/");
 }
 
-function differenceTwoDigitsDateString(today: string, futureDate: string) {
+function differenceTwoDigitsDateString(
+  today: string,
+  futureDate: string
+): number {
   return Number(futureDate) - Number(today);
 }
 
-function validateSecurityCode(securityCode: string, cardSecurityCode: string) {
-  const decryptedCardSecurityCode = cryptr.decrypt(cardSecurityCode);
-  console.log(decryptedCardSecurityCode);
+function validateSecurityCode(
+  securityCode: string,
+  cardSecurityCode: string
+): any {
+  const decryptedCardSecurityCode: string = cryptr.decrypt(cardSecurityCode);
+
   if (securityCode !== decryptedCardSecurityCode)
     throw { code: "Bad Request", message: "Security code is incorrect" };
 }
 
-function encryptPassword(password: string) {
+function encryptPassword(password: string): string {
   const SALT = 10;
   return bcrypt.hashSync(password, SALT);
 }

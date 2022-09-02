@@ -23,10 +23,19 @@ export default async function createCard(
   const cardholderName: string = generateCardHolderName(employee.fullName);
   const securityCode: string = generateEncryptedSecurityCode();
   const expirationDate: string = generateExpirationDate();
-  const isVirtual = false;
-  const isBlocked = true;
+  const isVirtual: boolean = false;
+  const isBlocked: boolean = true;
 
-  const cardData = {
+  const cardData: {
+    employeeId: number;
+    number: string;
+    cardholderName: string;
+    securityCode: string;
+    expirationDate: string;
+    isVirtual: boolean;
+    isBlocked: boolean;
+    type: cardRepository.TransactionTypes;
+  } = {
     employeeId,
     number,
     cardholderName,
@@ -40,22 +49,22 @@ export default async function createCard(
   await cardRepository.insert(cardData);
 }
 
-async function getCompanyByApiKey(apiKey: string) {
+async function getCompanyByApiKey(apiKey: string): Promise<any> {
   return await companyRepository.findByApiKey(apiKey);
 }
 
-async function getEmployeeById(employeeId: number) {
+async function getEmployeeById(employeeId: number): Promise<any> {
   return await employeeRepository.findById(employeeId);
 }
 
 async function getCardByTypeAndIdEmployeeId(
   type: cardRepository.TransactionTypes,
   employeeId: number
-) {
+): Promise<any> {
   return await cardRepository.findByTypeAndEmployeeId(type, employeeId);
 }
 
-const generateCardNumber = () =>
+const generateCardNumber = (): string =>
   faker.finance.creditCardNumber("####-####-####-####");
 
 function generateCardHolderName(employeeFullName: string): string {
@@ -75,17 +84,17 @@ function generateCardHolderName(employeeFullName: string): string {
   return cardHolderName.join(" ").toUpperCase();
 }
 
-const generateExpirationDate = () =>
+const generateExpirationDate = (): string =>
   dayjs(Date.now()).add(5, "year").format("MM/YY");
 
-const generateEncryptedSecurityCode = () =>
+const generateEncryptedSecurityCode = (): string =>
   cryptr.encrypt(faker.finance.creditCardCVV());
 
-function validateCompany(company: any) {
+function validateCompany(company: any): any {
   if (!company) throw { code: "Not Found", message: "Company not found" };
 }
 
-function validateEmployee(employee: any, company: any) {
+function validateEmployee(employee: any, company: any): any {
   if (!employee || employee.companyId !== company.id)
     throw { code: "Not Found", message: "Employee not found" };
 }
@@ -93,7 +102,7 @@ function validateEmployee(employee: any, company: any) {
 function validateCardType(
   hasCardType: any,
   type: cardRepository.TransactionTypes
-) {
+): any {
   if (hasCardType) {
     throw {
       code: "Conflict",
