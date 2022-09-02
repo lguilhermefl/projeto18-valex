@@ -41,16 +41,15 @@ function validateExpirationDate(expirationDate: string) {
   const arrayExpirationDate: string[] =
     splitFinancialDateValues(expirationDate);
 
-  const todaysMonth: string = arrayToday[0];
-  const todaysYear: string = arrayToday[1];
-  const expirationDateMonth: string = arrayExpirationDate[0];
-  const expirationDateYear: string = arrayExpirationDate[1];
+  const [todaysMonth, todaysYear]: string[] = arrayToday;
+  const [expirationDateMonth, expirationDateYear]: string[] =
+    arrayExpirationDate;
 
-  const monthDifference: number = differenceTwoDigitsDateString(
+  const monthDifference: number = getDifferenceTwoDigitsDateString(
     todaysMonth,
     expirationDateMonth
   );
-  const yearDifference: number = differenceTwoDigitsDateString(
+  const yearDifference: number = getDifferenceTwoDigitsDateString(
     todaysYear,
     expirationDateYear
   );
@@ -70,7 +69,7 @@ function splitFinancialDateValues(date: string): string[] {
   return date.split("/");
 }
 
-function differenceTwoDigitsDateString(
+function getDifferenceTwoDigitsDateString(
   today: string,
   futureDate: string
 ): number {
