@@ -2,10 +2,7 @@ import * as cardRepository from "../repositories/cardRepository";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";
 
-import {
-  validateCardExistence,
-  validateCardActivation,
-} from "./shared/validateCard";
+import { validateCardExistence, isCardActive } from "./shared/validateCard";
 import getCardById from "./shared/getCardById";
 
 import Cryptr from "cryptr";
@@ -19,7 +16,7 @@ export default async function activateCard(
   const card: any = await getCardById(id);
 
   validateCardExistence(card);
-  validateCardActivation(card);
+  isCardActive(card);
   validateExpirationDate(card.expirationDate);
   validateSecurityCode(securityCode, card.securityCode);
 
