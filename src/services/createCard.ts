@@ -10,7 +10,7 @@ export default async function createCard(
   apiKey: string,
   employeeId: number,
   type: cardRepository.TransactionTypes
-) {
+): Promise<any> {
   const company: any = await getCompanyByApiKey(apiKey);
   const employee: any = await getEmployeeById(employeeId);
   const hasCardType: any = await getCardByTypeAndIdEmployeeId(type, employeeId);

@@ -2,7 +2,11 @@ import * as cardRepository from "../repositories/cardRepository";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";
 
-import validateCard from "./validateCard";
+import {
+  validateCardExistence,
+  validateCardActivation,
+} from "./shared/validateCard";
+import getCardById from "./shared/getCardById";
 
 import Cryptr from "cryptr";
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET || "secret");
@@ -11,10 +15,11 @@ export default async function activateCard(
   id: number,
   securityCode: string,
   password: string
-) {
+): Promise<any> {
   const card: any = await getCardById(id);
 
-  validateCard(card);
+  validateCardExistence(card);
+  validateCardActivation(card);
   validateExpirationDate(card.expirationDate);
   validateSecurityCode(securityCode, card.securityCode);
 
@@ -28,11 +33,7 @@ export default async function activateCard(
   await cardRepository.update(id, cardData);
 }
 
-async function getCardById(id: number): Promise<any> {
-  return await cardRepository.findById(id);
-}
-
-function validateExpirationDate(expirationDate: string) {
+function validateExpirationDate(expirationDate: string): any {
   const today: string = getTodaysDateInFinancialFormat();
   const arrayToday: string[] = splitFinancialDateValues(today);
   const arrayExpirationDate: string[] =
