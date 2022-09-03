@@ -2,14 +2,14 @@ import * as rechargeRepository from "../repositories/rechargeRepository";
 import * as paymentRepository from "../repositories/paymentRepository";
 
 import getCardById from "./shared/getCardById";
-import { validateCardExistence } from "./shared/validateCard";
+import { isCardRegistered } from "./shared/validateCard";
 
 export default async function getCardBalanceAndTransactions(
   id: number
 ): Promise<any> {
   const card: any = getCardById(id);
 
-  validateCardExistence(card);
+  isCardRegistered(card);
 
   const recharges: any = await getTrasactionByCardId(
     id,
