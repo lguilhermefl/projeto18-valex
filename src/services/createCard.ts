@@ -1,5 +1,5 @@
-import * as companyRepository from "../repositories/companyRepository";
-import * as employeeRepository from "../repositories/employeeRepository";
+import * as validateCompany from "./shared/validateCompany";
+import * as validateEmployee from "./shared/validateEmployee";
 import * as cardRepository from "../repositories/cardRepository";
 import { faker } from "@faker-js/faker";
 import dayjs from "dayjs";
@@ -11,12 +11,12 @@ export default async function createCard(
   employeeId: number,
   type: cardRepository.TransactionTypes
 ): Promise<any> {
-  const company: any = await getCompanyByApiKey(apiKey);
-  const employee: any = await getEmployeeById(employeeId);
-  const hasCardType: any = await getCardByTypeAndIdEmployeeId(type, employeeId);
+  const company: any = await validateCompany.getCompanyByApiKey(apiKey);
+  const employee: any = await validateEmployee.getEmployeeById(employeeId);
+  const hasCardType: any = await getCardByTypeAndEmployeeId(type, employeeId);
 
-  validateCompany(company);
-  validateEmployee(employee, company);
+  validateCompany.validateCompany(company);
+  validateEmployee.validateEmployee(employee, company);
   validateCardType(hasCardType, type);
 
   const number: string = generateCardNumber();
@@ -49,15 +49,15 @@ export default async function createCard(
   await cardRepository.insert(cardData);
 }
 
-async function getCompanyByApiKey(apiKey: string): Promise<any> {
-  return await companyRepository.findByApiKey(apiKey);
-}
+// async function getCompanyByApiKey(apiKey: string): Promise<any> {
+//   return await companyRepository.findByApiKey(apiKey);
+// }
 
-async function getEmployeeById(employeeId: number): Promise<any> {
-  return await employeeRepository.findById(employeeId);
-}
+// async function getEmployeeById(employeeId: number): Promise<any> {
+//   return await employeeRepository.findById(employeeId);
+// }
 
-async function getCardByTypeAndIdEmployeeId(
+async function getCardByTypeAndEmployeeId(
   type: cardRepository.TransactionTypes,
   employeeId: number
 ): Promise<any> {
@@ -90,14 +90,14 @@ const generateExpirationDate = (): string =>
 const generateEncryptedSecurityCode = (): string =>
   cryptr.encrypt(faker.finance.creditCardCVV());
 
-function validateCompany(company: any): any {
-  if (!company) throw { code: "Not Found", message: "Company not found" };
-}
+// function validateCompany(company: any): any {
+//   if (!company) throw { code: "Not Found", message: "Company not found" };
+// }
 
-function validateEmployee(employee: any, company: any): any {
-  if (!employee || employee.companyId !== company.id)
-    throw { code: "Not Found", message: "Employee not found" };
-}
+// function validateEmployee(employee: any, company: any): any {
+//   if (!employee || employee.companyId !== company.id)
+//     throw { code: "Not Found", message: "Employee not found" };
+// }
 
 function validateCardType(
   hasCardType: any,

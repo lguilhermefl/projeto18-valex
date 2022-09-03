@@ -10,28 +10,28 @@ import { cardIdAndPasswordSchema } from "../schemas/cardIdAndPasswordSchema";
 const cardRouter = Router();
 
 cardRouter.post(
-  "/card",
+  "/cards",
   validateApiKeySchema,
   validateBodySchema(cardTypeSchema),
   cardController.createCardController
 );
 cardRouter.put(
-  "/card",
+  "/cards",
   validateBodySchema(activateCardSchema),
   cardController.activateCardController
 );
 cardRouter.get(
-  "/card/balance/:cardId",
+  "/cards/balance/:cardId",
   validateCardId,
   cardController.getCardBalanceAndTransactionsController
 );
 cardRouter.put(
-  "/card/block",
+  "/cards/block",
   validateBodySchema(cardIdAndPasswordSchema),
   cardController.blockCardController
 );
 cardRouter.put(
-  "/card/unblock",
+  "/cards/unblock",
   validateBodySchema(cardIdAndPasswordSchema),
   cardController.unblockCardController
 );

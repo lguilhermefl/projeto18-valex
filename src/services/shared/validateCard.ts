@@ -12,6 +12,11 @@ export function isCardActive(card: any): any {
     throw { code: "Bad Request", message: "Card is already active" };
 }
 
+export function isCardInactive(card: any): any {
+  if (!card.password)
+    throw { code: "Bad Request", message: "Card is not active" };
+}
+
 export function isCardBlocked(card: any): any {
   if (card.isBlocked)
     throw { code: "Bad Request", message: "Card is already blocked" };
