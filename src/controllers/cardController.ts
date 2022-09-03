@@ -3,6 +3,8 @@ import createCard from "../services/createCard";
 import activateCard from "../services/activateCard";
 import getCardBalanceAndTransactions from "../services/getCardBalanceAndTransactions";
 import { TransactionTypes } from "../repositories/cardRepository";
+import blockCard from "../services/blockCard";
+import unblockCard from "../services/unblockCard";
 
 export async function createCardController(req: Request, res: Response) {
   const apiKey: any = req.headers["x-api-key"];
@@ -36,4 +38,20 @@ export async function getCardBalanceAndTransactionsController(
   );
 
   res.status(200).send(balanceAndTransactions);
+}
+
+export async function blockCardController(req: Request, res: Response) {
+  const { id, password }: { id: number; password: string } = req.body;
+
+  await blockCard(id, password);
+
+  res.sendStatus(200);
+}
+
+export async function unblockCardController(req: Request, res: Response) {
+  const { id, password }: { id: number; password: string } = req.body;
+
+  await unblockCard(id, password);
+
+  res.sendStatus(200);
 }

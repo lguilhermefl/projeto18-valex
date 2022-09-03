@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import bcrypt from "bcrypt";
 import Cryptr from "cryptr";
 const cryptr = new Cryptr(process.env.CRYPTR_SECRET || "secret");
 
@@ -11,7 +12,22 @@ export function isCardActive(card: any): any {
     throw { code: "Bad Request", message: "Card is already active" };
 }
 
-export function isSecurityCodeValid(
+export function isCardBlocked(card: any): any {
+  if (card.isBlocked)
+    throw { code: "Bad Request", message: "Card is already blocked" };
+}
+
+export function isCardUnblocked(card: any): any {
+  if (!card.isBlocked)
+    throw { code: "Bad Request", message: "Card is already unblocked" };
+}
+
+export function isPasswordCorrect(password: string, cardPassword: string) {
+  if (!bcrypt.compareSync(password, cardPassword))
+    throw { code: "Unauthorized", message: "Incorrect password" };
+}
+
+export function isSecurityCodeCorrect(
   securityCode: string,
   cardSecurityCode: string
 ): any {

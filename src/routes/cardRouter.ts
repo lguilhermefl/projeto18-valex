@@ -5,6 +5,7 @@ import validateApiKeySchema from "../middlewares/apiKeyValidationMiddleware";
 import { cardTypeSchema } from "../schemas/createCardSchema";
 import { activateCardSchema } from "../schemas/activateCardSchema";
 import validateCardId from "../middlewares/cardIdValidationMiddleware";
+import { cardIdAndPasswordSchema } from "../schemas/cardIdAndPasswordSchema";
 
 const cardRouter = Router();
 
@@ -23,6 +24,16 @@ cardRouter.get(
   "/card/balance/:cardId",
   validateCardId,
   cardController.getCardBalanceAndTransactionsController
+);
+cardRouter.put(
+  "/card/block",
+  validateBodySchema(cardIdAndPasswordSchema),
+  cardController.blockCardController
+);
+cardRouter.put(
+  "/card/unblock",
+  validateBodySchema(cardIdAndPasswordSchema),
+  cardController.unblockCardController
 );
 
 export default cardRouter;

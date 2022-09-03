@@ -14,12 +14,11 @@ export default async function activateCard(
   validateCard.isCardRegistered(card);
   validateCard.isCardActive(card);
   validateCard.isCardExpired(card.expirationDate);
-  validateCard.isSecurityCodeValid(securityCode, card.securityCode);
+  validateCard.isSecurityCodeCorrect(securityCode, card.securityCode);
 
   const passwordHash: string = encryptPassword(password);
 
-  const cardData: { isBlocked: boolean; password: string } = {
-    isBlocked: false,
+  const cardData: { password: string } = {
     password: passwordHash,
   };
 
