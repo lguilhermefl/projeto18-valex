@@ -11,11 +11,11 @@ export default async function getCardBalanceAndTransactions(
 
   isCardRegistered(card);
 
-  const recharges: any = await getTrasactionByCardId(
+  const recharges: any = await getTrasactionsByCardId(
     id,
     rechargeRepository.findByCardId
   );
-  const transactions: any = await getTrasactionByCardId(
+  const transactions: any = await getTrasactionsByCardId(
     id,
     paymentRepository.findByCardId
   );
@@ -34,7 +34,7 @@ export default async function getCardBalanceAndTransactions(
   return balanceAndTransactions;
 }
 
-async function getTrasactionByCardId(
+async function getTrasactionsByCardId(
   id: number,
   repositoryFunction: Function
 ): Promise<any> {

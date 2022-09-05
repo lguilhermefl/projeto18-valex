@@ -35,5 +35,15 @@ cardRouter.put(
   validateBodySchema(cardIdAndPasswordSchema),
   cardController.unblockCardController
 );
+cardRouter.post(
+  "/cards/virtual",
+  validateBodySchema(cardIdAndPasswordSchema),
+  cardController.createVirtualCardController
+);
+cardRouter.delete(
+  "/cards/virtual",
+  validateBodySchema(cardIdAndPasswordSchema),
+  cardController.deleteVirtualCardController
+);
 
 export default cardRouter;

@@ -14,6 +14,7 @@ export default async function rechargeCard(
 
   validateCompany.validateCompany(company);
   validateCard.isCardRegistered(card);
+  validateCard.isNotVirtual(card.isVirtual);
 
   const employee: any = await validateEmployee.getEmployeeById(card.employeeId);
 

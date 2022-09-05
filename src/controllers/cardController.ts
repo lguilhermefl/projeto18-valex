@@ -5,6 +5,8 @@ import getCardBalanceAndTransactions from "../services/getCardBalanceAndTransact
 import { TransactionTypes } from "../repositories/cardRepository";
 import blockCard from "../services/blockCard";
 import unblockCard from "../services/unblockCard";
+import createVirtualCard from "../services/createVirtualCard";
+import deleteVirtualCard from "../services/deleteVirtualCard";
 
 export async function createCardController(req: Request, res: Response) {
   const apiKey: any = req.headers["x-api-key"];
@@ -52,6 +54,22 @@ export async function unblockCardController(req: Request, res: Response) {
   const { id, password }: { id: number; password: string } = req.body;
 
   await unblockCard(id, password);
+
+  res.sendStatus(200);
+}
+
+export async function createVirtualCardController(req: Request, res: Response) {
+  const { id, password }: { id: number; password: string } = req.body;
+
+  await createVirtualCard(id, password);
+
+  res.sendStatus(201);
+}
+
+export async function deleteVirtualCardController(req: Request, res: Response) {
+  const { id, password }: { id: number; password: string } = req.body;
+
+  await deleteVirtualCard(id, password);
 
   res.sendStatus(200);
 }

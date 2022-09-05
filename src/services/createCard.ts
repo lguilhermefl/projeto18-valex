@@ -1,10 +1,7 @@
 import * as validateCompany from "./shared/validateCompany";
 import * as validateEmployee from "./shared/validateEmployee";
 import * as cardRepository from "../repositories/cardRepository";
-import { faker } from "@faker-js/faker";
-import dayjs from "dayjs";
-import Cryptr from "cryptr";
-const cryptr = new Cryptr(process.env.CRYPTR_SECRET || "secret");
+import * as cardCreation from "../services/shared/cardCreation";
 
 export default async function createCard(
   apiKey: string,
@@ -19,10 +16,12 @@ export default async function createCard(
   validateEmployee.validateEmployee(employee, company);
   validateCardType(hasCardType, type);
 
-  const number: string = generateCardNumber();
-  const cardholderName: string = generateCardHolderName(employee.fullName);
-  const securityCode: string = generateEncryptedSecurityCode();
-  const expirationDate: string = generateExpirationDate();
+  const number: string = cardCreation.generateCardNumber();
+  const cardholderName: string = cardCreation.generateCardHolderName(
+    employee.fullName
+  );
+  const securityCode: string = cardCreation.generateEncryptedSecurityCode();
+  const expirationDate: string = cardCreation.generateExpirationDate();
   const isVirtual: boolean = false;
   const isBlocked: boolean = true;
 
@@ -49,55 +48,12 @@ export default async function createCard(
   await cardRepository.insert(cardData);
 }
 
-// async function getCompanyByApiKey(apiKey: string): Promise<any> {
-//   return await companyRepository.findByApiKey(apiKey);
-// }
-
-// async function getEmployeeById(employeeId: number): Promise<any> {
-//   return await employeeRepository.findById(employeeId);
-// }
-
 async function getCardByTypeAndEmployeeId(
   type: cardRepository.TransactionTypes,
   employeeId: number
 ): Promise<any> {
   return await cardRepository.findByTypeAndEmployeeId(type, employeeId);
 }
-
-const generateCardNumber = (): string =>
-  faker.finance.creditCardNumber("####-####-####-####");
-
-function generateCardHolderName(employeeFullName: string): string {
-  const nameArray: string[] = employeeFullName.split(" ");
-  const cardHolderName: string[] = [];
-
-  nameArray.forEach((str, index) => {
-    if (index === 0 || index === nameArray.length - 1) {
-      cardHolderName.push(str);
-    } else {
-      if (str.length >= 3) {
-        cardHolderName.push(str[0]);
-      }
-    }
-  });
-
-  return cardHolderName.join(" ").toUpperCase();
-}
-
-const generateExpirationDate = (): string =>
-  dayjs(Date.now()).add(5, "year").format("MM/YY");
-
-const generateEncryptedSecurityCode = (): string =>
-  cryptr.encrypt(faker.finance.creditCardCVV());
-
-// function validateCompany(company: any): any {
-//   if (!company) throw { code: "Not Found", message: "Company not found" };
-// }
-
-// function validateEmployee(employee: any, company: any): any {
-//   if (!employee || employee.companyId !== company.id)
-//     throw { code: "Not Found", message: "Employee not found" };
-// }
 
 function validateCardType(
   hasCardType: any,

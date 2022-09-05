@@ -18,18 +18,22 @@ export function isCardInactive(card: any): any {
 }
 
 export function isCardBlocked(card: any): any {
-  if (card.isBlocked)
-    throw { code: "Bad Request", message: "Card is already blocked" };
+  if (card.isBlocked) throw { code: "Bad Request", message: "Card is blocked" };
 }
 
 export function isCardUnblocked(card: any): any {
   if (!card.isBlocked)
-    throw { code: "Bad Request", message: "Card is already unblocked" };
+    throw { code: "Bad Request", message: "Card is unblocked" };
 }
 
 export function isPasswordCorrect(password: string, cardPassword: string) {
   if (!bcrypt.compareSync(password, cardPassword))
     throw { code: "Unauthorized", message: "Incorrect password" };
+}
+
+export function hasBalanceForPayment(cardBalance: number, amount: number) {
+  if (cardBalance < amount)
+    throw { code: "Bad Request", message: "Card doesn't have enough balance" };
 }
 
 export function isSecurityCodeCorrect(
@@ -40,6 +44,19 @@ export function isSecurityCodeCorrect(
 
   if (securityCode !== decryptedCardSecurityCode)
     throw { code: "Bad Request", message: "Security code is incorrect" };
+}
+
+export function isNotVirtual(isVirtual: boolean): any {
+  if (isVirtual)
+    throw { code: "Bad Request", message: "Card id is from a virtual card" };
+}
+
+export function isVirtual(isVirtual: boolean): any {
+  if (!isVirtual)
+    throw {
+      code: "Bad Request",
+      message: "Card id is not from a virtual card",
+    };
 }
 
 export function isCardExpired(expirationDate: string): any {
